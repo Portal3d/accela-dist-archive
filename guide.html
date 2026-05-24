@@ -91,7 +91,7 @@
         }
 
         /* Content Area */
-        .content-area { flex: 1; padding-bottom: 2rem; }
+        .content-area { flex: 1; padding-bottom: 2rem; min-width: 0; } /* min-width: 0 to fix overflow issues */
         .tab-content { display: none; line-height: 1.6; }
         .tab-content.active { display: block; animation: bootUp 0.3s ease-out; }
         
