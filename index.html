@@ -48,7 +48,7 @@
             width: 100vw; 
             height: 100vh;
             z-index: 1; 
-            opacity: 0.4; /* Increased from 0.15 */
+            opacity: 0.4;
             pointer-events: none;
             background-position: center; 
             background-repeat: no-repeat; 
@@ -108,7 +108,7 @@
             max-width: 900px;
             padding: 2rem;
             border: 1px solid var(--dim-text);
-            background: rgba(10, 0, 5, 0.65); /* Made slightly more transparent to see GIFs behind the text */
+            background: rgba(10, 0, 5, 0.65);
             backdrop-filter: blur(3px);
             box-shadow: inset 0 0 20px rgba(80, 20, 30, 0.5), 0 0 15px rgba(227, 134, 149, 0.1);
             z-index: 10;
@@ -246,6 +246,16 @@
             justify-content: space-between;
         }
 
+        /* Lang toggle */
+        #lang-toggle {
+            cursor: pointer;
+            color: var(--dim-text);
+            transition: color 0.3s;
+        }
+        #lang-toggle:hover {
+            color: var(--text-color);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             h1 { font-size: 2rem; }
@@ -270,12 +280,13 @@
         <header>
             <div>
                 <h1>Navi // Accela_Dist</h1>
-                <p>Present day, present time. HAHAHAHA.</p>
+                <p data-i18n="subtitle">Present day, present time. HAHAHAHA.</p>
             </div>
             <div class="sys-info">
                 NODE: 192.168.x.x<br>
                 ENC: RSA-4096 / KNIGHTS_BYPASS<br>
-                USER: ANONYMOUS
+                USER: ANONYMOUS<br>
+                <span id="lang-toggle" onclick="toggleLang()">[ EN / PT-BR ]</span>
             </div>
         </header>
 
@@ -289,26 +300,26 @@
         </div>
 
         <div style="margin-bottom: 2rem; border: 1px solid var(--dim-text); padding: 1rem; background: rgba(227, 134, 149, 0.05);">
-            <p>&gt; <a href="./guide.html" class="glitch-link" data-text="ACCESS_DOCUMENTATION_ARCHIVE">ACCESS_DOCUMENTATION_ARCHIVE</a></p>
-            <p style="font-size: 0.85rem; color: var(--dim-text); margin-top: 0.5rem;">Contains setup instructions, Steam integration guides, and troubleshooting.</p>
+            <p>&gt; <a href="./guide.html" class="glitch-link" data-i18n="doc_link" data-text="ACCESS_DOCUMENTATION_ARCHIVE">ACCESS_DOCUMENTATION_ARCHIVE</a></p>
+            <p style="font-size: 0.85rem; color: var(--dim-text); margin-top: 0.5rem;" data-i18n="doc_desc">Contains setup instructions, Steam integration guides, and troubleshooting.</p>
             <p class="cryptic" style="margin-top: 10px;">Tk0135: 記録はすべて、このアーカイヴの闇に隠蔽された...</p>
         </div>
 
-        <p>AVAILABLE PHARMA-CODE / ACCELA RELEASES:</p>
+        <p data-i18n="releases_title">AVAILABLE PHARMA-CODE / ACCELA RELEASES:</p>
         <p class="cryptic">プロトコル7は、私たちの意識を繋ぐ。</p>
 
         <table class="directory">
             <thead>
                 <tr>
-                    <th>FILENAME</th>
-                    <th>SIZE</th>
-                    <th>TIMESTAMP</th>
-                    <th>SIGNATURE</th>
+                    <th data-i18n="col_filename">FILENAME</th>
+                    <th data-i18n="col_size">SIZE</th>
+                    <th data-i18n="col_timestamp">TIMESTAMP</th>
+                    <th data-i18n="col_signature">SIGNATURE</th>
                 </tr>
             </thead>
             <tbody id="release-table-body">
                 <tr>
-                    <td colspan="4" style="text-align: center; padding: 2rem; color: var(--dim-text);">
+                    <td colspan="4" style="text-align: center; padding: 2rem; color: var(--dim-text);" data-i18n="connecting">
                         [ ESTABLISHING CONNECTION TO REPOSITORY... ]
                     </td>
                 </tr>
@@ -316,44 +327,63 @@
         </table>
 
         <footer>
-            <span>protocol 7.0 // wired</span>
-            <span>Let's all love Lain.</span>
+            <span data-i18n="footer_left">protocol 7.0 // wired</span>
+            <span data-i18n="footer_right">Let's all love Lain.</span>
         </footer>
     </main>
 
     <script>
+
+        // --- i18n System ---
+        let currentLang = 'en';
+        let translations = {};
+
+        async function loadLanguage(lang) {
+            try {
+                const res = await fetch(`./locales/${lang}.json`);
+                translations = await res.json();
+                currentLang = lang;
+                localStorage.setItem('lang', lang);
+                applyTranslations();
+            } catch (e) {
+                console.warn(`Could not load language: ${lang}`);
+            }
+        }
+
+        function applyTranslations() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if (translations[key]) {
+                    // glitch-link também precisa atualizar o data-text
+                    if (el.classList.contains('glitch-link')) {
+                        el.dataset.text = translations[key];
+                    }
+                    el.textContent = translations[key];
+                }
+            });
+        }
+
+        function toggleLang() {
+            loadLanguage(currentLang === 'en' ? 'pt-BR' : 'en');
+        }
+
+        function detectLanguage() {
+            const saved = localStorage.getItem('lang');
+            if (saved) return saved;
+            return navigator.language.startsWith('pt') ? 'pt-BR' : 'en';
+        }
+
         // --- Cryptic Console Logs ---
         console.log("%c 柊子先生、私は本物ですか？ ", "color: rgba(227, 134, 149, 0.2); font-size: 12px;");
         console.log("%c Tk0134: レイン、どこにいるの？助けて... ", "color: rgba(227, 134, 149, 0.15); font-size: 11px;");
         console.log("%c 記録は書き換えられている... アーカイヴ（DOCUMENTATION）を調べて... ", "color: rgba(227, 134, 149, 0.05); font-size: 10px;");
 
         // --- Boot Sequence Logic ---
-        const bootText = [
-            "Copland OS Enterprise v9.0.2",
-            "Initializing hardware...",
-            "Loading memory modules... ERR: 記憶の混濁",
-            "Establishing connection to The Wired...",
-            "Tk0112: 彼女が何を考えているのか、全く分からない。",
-            "WARNING: Unregistered protocol detected.",
-            "Bypassing Knights firewall protocols...",
-            "Dc1029: 先生は私を愛してる？",
-            "Decrypting subsystem...",
-            "Tk0128: 彼女がシステムを浸食している... 私の記録が...",
-            "Accessing shadow node...",
-            "WARNING: 肉体との同期を完全喪失。",
-            "Dc1056: 肉体って、本当は邪魔なのかな。",
-            "Dc1059: ここには誰もいない。私しかいない。",
-            "ACCELA distribution directory found.",
-            "Tk0135: 彼女の真実は、ドキュメント・アーカイヴに沈められた...",
-            "Handshake complete.",
-            "..."
-        ];
-
         const bootScreen = document.getElementById('boot-screen');
         const mainInterface = document.getElementById('main-interface');
         let currentLine = 0;
 
-        function typeLine() {
+        function typeLine(bootText) {
             if (currentLine < bootText.length) {
                 const line = document.createElement('div');
                 bootScreen.appendChild(line);
@@ -368,10 +398,9 @@
                     if (charIndex >= text.length) {
                         clearInterval(typing);
                         currentLine++;
-                        // Random delay between lines
-                        setTimeout(typeLine, Math.random() * 300 + 100);
+                        setTimeout(() => typeLine(bootText), Math.random() * 300 + 100);
                     }
-                }, 15); // Typing speed
+                }, 15);
             } else {
                 setTimeout(() => {
                     bootScreen.style.display = 'none';
@@ -381,14 +410,14 @@
         }
 
         // Start boot sequence on load
-        window.onload = () => {
+        window.onload = async () => {
+            // Carrega o idioma antes de tudo
+            await loadLanguage(detectLanguage());
+
             // --- Audio Handling ---
             const bgm = document.getElementById('ambient-bgm');
-            bgm.volume = 0.4; // Set to 40% volume so it's not deafening
-            
-            // Attempt to autoplay
+            bgm.volume = 0.4;
             bgm.play().catch(() => {
-                // If browser blocks autoplay, wait for first click anywhere
                 document.addEventListener('click', () => {
                     bgm.play();
                 }, { once: true });
@@ -412,10 +441,31 @@
             // --- Check for Skip Boot Parameter ---
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('skipBoot') === 'true') {
-                document.getElementById('boot-screen').style.display = 'none';
-                document.getElementById('main-interface').style.display = 'block';
+                bootScreen.style.display = 'none';
+                mainInterface.style.display = 'block';
             } else {
-                typeLine();
+                // Usa as linhas do idioma detectado, com fallback para inglês hardcoded
+                const bootText = translations.boot_lines || [
+                    "Copland OS Enterprise v9.0.2",
+                    "Initializing hardware...",
+                    "Loading memory modules... ERR: 記憶の混濁",
+                    "Establishing connection to The Wired...",
+                    "Tk0112: 彼女が何を考えているのか、全く分からない。",
+                    "WARNING: Unregistered protocol detected.",
+                    "Bypassing Knights firewall protocols...",
+                    "Dc1029: 先生は私を愛してる？",
+                    "Decrypting subsystem...",
+                    "Tk0128: 彼女がシステムを浸食している... 私の記録が...",
+                    "Accessing shadow node...",
+                    "WARNING: 肉体との同期を完全喪失。",
+                    "Dc1056: 肉体って、本当は邪魔なのかな。",
+                    "Dc1059: ここには誰もいない。私しかいない。",
+                    "ACCELA distribution directory found.",
+                    "Tk0135: 彼女の真実は、ドキュメント・アーカイヴに沈められた...",
+                    "Handshake complete.",
+                    "..."
+                ];
+                typeLine(bootText);
             }
 
             // Fetch the releases from GitHub
@@ -426,7 +476,6 @@
         async function fetchLatestReleases() {
             const tbody = document.getElementById('release-table-body');
             try {
-                // Mock API payload to preserve original function structure
                 const data = {
                     assets: [
                         {
@@ -446,15 +495,11 @@
                     ]
                 };
 
-                tbody.innerHTML = ''; // Clear the "Establishing connection" message
+                tbody.innerHTML = '';
 
-                // Loop through each file in the latest release
                 data.assets.forEach(asset => {
-                    // Convert bytes to MB (Adapted to handle external size representation)
                     const sizeMB = asset.size ? (asset.size / (1024 * 1024)).toFixed(1) + ' MB' : '[EXTERNAL]';
-                    // Format the date to look like the Lain interface
                     const date = new Date(asset.updated_at).toISOString().replace('T', ' ').substring(0, 19);
-                    // Generate a fake authentic-looking hex signature based on the file ID
                     const sigHex = Math.abs(asset.id).toString(16).substring(0, 4).toUpperCase();
 
                     const tr = document.createElement('tr');
@@ -469,11 +514,9 @@
                     tbody.appendChild(tr);
                 });
 
-                // Apply the glitch effect to the newly generated links
                 applyGlitchEffects();
 
             } catch (error) {
-                // If the API fails or you get rate-limited, show an error in the Wired
                 tbody.innerHTML = `<tr><td colspan="4" style="color: var(--alert-color); text-align: center; padding: 2rem;">[ ERR: CONNECTION TO SHADOW NODE SEVERED ]</td></tr>`;
             }
         }
