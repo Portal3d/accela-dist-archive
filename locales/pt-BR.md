@@ -43,6 +43,8 @@ boot_lines:
   - "Tk0135: 彼女の真実は、ドキュメント・アーカイヴに沈められた..."
   - Handshake completo.
   - "..."
+quote_main: '"Não importa onde você esteja, todos estão sempre conectados."'
+quote_sub: "-- Feche o mundo, abra o próXimo."
 ---
 
 <!-- tab: main -->

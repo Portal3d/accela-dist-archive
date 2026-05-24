@@ -43,6 +43,8 @@ boot_lines:
   - "Tk0135: 彼女の真実は、ドキュメント・アーカイヴに沈められた..."
   - Handshake complete.
   - "..."
+quote_main: '"No matter where you are, everyone is always connected."'
+quote_sub: "-- Close the world, Open the nExt."
 ---
 
 <!-- tab: main -->
