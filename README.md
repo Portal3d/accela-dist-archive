@@ -4,13 +4,18 @@ An archival backup and functional mirror of the defunct ACCELA-DIST web page, re
 
 ## Restoration Details
 
-The original site went offline, so the source code was extracted from internet archives and adapted to run properly. The following modifications were made to ensure everything remains functional:
+The original site went offline, so the source code was extracted from internet archives and adapted to run properly. The following essential modifications were made to restore functionality:
 
-* **Asset Localization:** Extracted original files and media (HTML, CSS, GIFs, Audio, Fonts) and fixed URLs to run locally, removing Wayback Machine injection scripts.
-* **Preserved Releases:** Replaced the original dynamic API calls with static links to the preserved Windows and Linux binaries.
-* **API / Domain Updates:** Updated the Morrenus domain references to point to the new Hubcap manifest.
-* **Minor Layout Fixes**
+* **Local Assets:** Extracted original media and removed all Wayback Machine injection scripts.
+* **Preserved Binaries:** Replaced dead API calls with links to the preserved Windows and Linux releases.
+* **Domain Updates:** Updated Morrenus API references to point to the new Hubcap manifest.
 
+## Improvements
+
+To make the project more accessible and easier to maintain, the following improvements were added:
+
+* **Code Refactoring:** Separated JS/CSS into standalone files and converted the static HTML guide to dynamic Markdown rendering. *(Thanks to [@aglairdev](https://github.com/aglairdev) for this implementation)*
+* **Multi-language Support:** Added English and PT-BR translations with automatic system language detection. *(Thanks to [@aglairdev](https://github.com/aglairdev) for this implementation)*
 
 ## Credits
-**All the credits go to the original creator of the tool and the website**
+**All the credits go to the original creator of the tool and the website.**
