@@ -282,7 +282,17 @@ window.addEventListener('DOMContentLoaded', async () => {
     if (IS_INDEX) {
         const bootScreen    = document.getElementById('boot-screen');
         const mainInterface = document.getElementById('main-interface');
-        const gifs  = ['./downloading_lain2.gif', './main.gif'];
+        const gifs = [
+            './downloading_lain1.gif',
+            './downloading_lain2.gif',
+            './downloading_lain3.gif',
+            './downloading_lain4.gif',
+            './downloading_lain5.gif',
+            './downloading_lain6.gif',
+            './downloading_lain7.gif',
+            './downloading_lain11.gif',
+            './main.gif'
+        ];
         const dynBg = document.getElementById('dynamic-bg');
         if (dynBg) dynBg.style.backgroundImage = `url('${gifs[Math.floor(Math.random() * gifs.length)]}')`;
         const urlParams = new URLSearchParams(window.location.search);
